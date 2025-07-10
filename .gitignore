@@ -140,3 +140,4 @@ vite.config.ts.timestamp-*
 
 # JetBrains IDE
 .idea
+.DS_Store
