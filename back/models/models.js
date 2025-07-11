@@ -20,8 +20,8 @@ const Products = sequelize.define("products", {
 })
 
 const Baskets = sequelize.define("baskets", {
-    id_basket: {type: DataTypes.INTEGER, primaryKey: true, allowNull: false},
-    total_price: {type: DataTypes.FLOAT, allowNull: false},
+    id_basket: {type: DataTypes.INTEGER, primaryKey: true, allowNull: false, autoIncrement: true},
+    total_price: {type: DataTypes.FLOAT, allowNull: false, defaultValue: 0},
 })
 
 const Basket_Content = sequelize.define("basket_content", {
@@ -38,8 +38,9 @@ const Orders_Content = sequelize.define("orders_content", {
 })
 
 const Rating = sequelize.define("rating", {
-    id: {type: DataTypes.INTEGER, primaryKey: true, allowNull: false},
+    id: {type: DataTypes.INTEGER, primaryKey: true, allowNull: false, autoIncrement: true},
     rating: {type: DataTypes.INTEGER, allowNull: false},
+    text: {type: DataTypes.STRING, allowNull: false},
 })
 
 Users.hasOne(Baskets)
