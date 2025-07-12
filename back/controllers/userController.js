@@ -15,20 +15,24 @@ const generateJwt = (id, email, role) => {
 class UserController {
 
     async login(req, res, next) {
-        const {email, password} = req.body
-        if (!email || !password) {
-            return next(ApiError.badRequest('Некорректный email или password!'))
+        try {
+            const {email, password} = req.body
+            if (!email || !password) {
+                return next(ApiError.badRequest('Некорректный email или password!'))
+            }
+            const user = await Users.findOne({where: {email:email}})
+            if (!user) {
+                return next(ApiError.internal('Пользователя с такой почтой не существует!'))
+            }
+            let comparePassword = await bcrypt.compare(password, user.password);
+            if (!comparePassword) {
+                return next(ApiError.badRequest('Неверный пароль!'))
+            }
+            const token = generateJwt(user.id, user.email, user.role)
+            return res.json({token})
+        } catch (e) {
+            return next(ApiError.internal(e.message))
         }
-        const user = await User.findOne({where: {email:email}})
-        if (!user) {
-            return next(ApiError.internal('Пользователя с такой почтой не существует!'))
-        }
-        let comparePassword = await bcrypt.compare(password, user.password);
-        if (!comparePassword) {
-            return next(ApiError.badRequest('Неверный пароль!'))
-        }
-        const token = generateJwt(user.id, user.email, user.role)
-        return res.json({token})
     }
 
 
@@ -53,11 +57,8 @@ class UserController {
     }
 
     async check(req, res, next){
-        const {id} = req.query
-        if (!id) {
-            return next(ApiError.badRequest('Не задан ID'))
-        }
-        res.json(id)
+        const token = generateJwt(req.user.id, req.user.email, req.user.role);
+        return res.json({token})
     }
 }
 

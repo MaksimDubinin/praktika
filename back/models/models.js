@@ -31,6 +31,7 @@ const Basket_Content = sequelize.define("basket_content", {
 const Orders = sequelize.define("orders", {
     id_order: {type: DataTypes.INTEGER, primaryKey: true, allowNull: false, autoIncrement: true},
     total_price: {type: DataTypes.DECIMAL(10, 2), allowNull: false},
+    date: {type: DataTypes.DATE, allowNull: false, defaultValue: Date.now()},
 })
 
 const Orders_Content = sequelize.define("orders_content", {

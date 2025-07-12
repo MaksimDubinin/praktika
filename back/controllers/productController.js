@@ -1,21 +1,30 @@
-const {Products, Rating, Review} = require('../models/models');
+const {Products, Rating, Review, Users} = require('../models/models');
 const ApiError = require("../error/ApiError");
 const { sequelize } = require('../db');
 
 
 class productController {
     async getAllProducts(req, res, next) {
-        const products = await Products.findAll();
-        if (!products.length) {
-            return next(ApiError.badRequest("Товаров нету!"));
+        try {
+            const products = await Products.findAll();
+            if (!products.length) {
+                return next(ApiError.badRequest("Товаров нету!"));
+            }
+            return res.json(products);
+        } catch (e) {
+            return next(ApiError.internal(e));
         }
-        return res.json(products);
     }
 
     async getOneProduct(req, res, next) {
         try {
             const {id} = req.params
-            const product = await Products.findOne({where: {id: id}})
+            const product = await Products.findOne({
+                where: {id: id},
+                include: [
+                    { model: Rating, attributes: ['text', 'rating', 'userId']},
+                ]
+            })
             if (!product) {
                 return next(ApiError.badRequest('Товара с такми ID не существует!'))
             }
@@ -77,7 +86,6 @@ class productController {
         } catch (e) {
             return next(ApiError.internal(e.message));
         }
-
     }
 }
 
