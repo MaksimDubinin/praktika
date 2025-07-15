@@ -1,13 +1,20 @@
 const {Products, Rating, Review, Users} = require('../models/models');
 const ApiError = require("../error/ApiError");
 const { sequelize } = require('../db');
-
+const uuid = require('uuid')
+const path = require('path')
 
 class productController {
     async getAllProducts(req, res, next) {
         try {
-            const products = await Products.findAll();
-            if (!products.length) {
+            const {type} = req.query
+            let products
+            if (!type) {
+                products = await Products.findAll()
+            } else {
+                products = await Products.findAll({where: {type}})
+            }
+            if (products.length === 0) {
                 return next(ApiError.badRequest("Товаров нету!"));
             }
             return res.json(products);
@@ -36,9 +43,16 @@ class productController {
 
     async createProduct(req, res, next) {
         try {
-            const {type, name, price, img} = req.body
-            console.log(type, name, price, img)
-            const product = await Products.create({type: type, name: name, price: price, img: img})
+            const {type, name, price} = req.body
+            const {img} = req.files
+            let filename = uuid.v4() + ".jpg"
+            img.mv(path.resolve(__dirname, `..`, 'static', filename))
+            const product = await Products.create({
+                    type: type,
+                    name: name,
+                    price: price,
+                    img: filename
+            })
             return res.json(product);
         } catch (e) {
             return next(ApiError.internal(e.message));

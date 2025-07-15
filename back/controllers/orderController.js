@@ -61,7 +61,7 @@ class basketController {
             const {id} = req.body;
             const orders = await Orders.findAll({
                 where: {userId: id},
-                include: {model: Orders_Content}
+                include: {model: Orders_Content, attributes: ['quantity', 'orderIdOrder', 'productId']},
             })
             if (orders.length === 0) {
                 return next(ApiError.badRequest("Заказов нет!"))

@@ -42,8 +42,8 @@ class UserController {
             if (!email || !password) {
                 return next (ApiError.internal("Неверный пароль или почта!"));
             }
-            const condidate = await Users.findOne({where: {email: email}})
-            if (condidate) {
+            const candidate = await Users.findOne({where: {email: email}})
+            if (candidate) {
                 return next(ApiError.badRequest('Пользователь с такой почтой уже сущуствует!'))
             }
             const hashedPassword = await bcrypt.hash(password, 5);
@@ -57,7 +57,8 @@ class UserController {
     }
 
     async check(req, res, next){
-        const token = generateJwt(req.user.id, req.user.email, req.user.role);
+        const candidate = await Users.findOne({where: req.user.id})
+        const token = generateJwt(req.user.id, req.user.email, candidate.role);
         return res.json({token})
     }
 }
