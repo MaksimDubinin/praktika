@@ -33,14 +33,6 @@ export const authRoutes = [
         Component: Home,
     },
     {
-        path: LOGIN_ROUTE,
-        Component: RegistrationPage
-    },
-    {
-        path: REGISTRATION_ROUTE,
-        Component: RegistrationPage
-    },
-    {
         path: BASKET_ROUTE,
         Component: BasketPage
     },
