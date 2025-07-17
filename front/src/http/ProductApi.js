@@ -12,7 +12,7 @@ export const getProducts = async (type = "all") => {
     return data
 }
 
-export const getProduct = async (id) => {const {data} = await $host.get(
+export const getOneProduct = async (id) => {const {data} = await $host.get(
     process.env.REACT_APP_API_URL + `/product/${id}`);
     console.log(data);
     return data
