@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import {Button, Container, Nav, Navbar} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 const NavBar = observer(() => {
     const {user} = useContext(Context)

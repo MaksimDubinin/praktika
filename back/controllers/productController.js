@@ -9,10 +9,10 @@ class productController {
         try {
             const {type} = req.query
             let products
-            if (!type) {
+            if (type === "Все типы") {
                 products = await Products.findAll()
             } else {
-                products = await Products.findAll({where: {type}})
+                products = await Products.findAll({where: {type: type}})
             }
             if (products.length === 0) {
                 return next(ApiError.badRequest("Товаров нету!"));

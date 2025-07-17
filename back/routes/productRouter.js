@@ -5,7 +5,7 @@ const checkRoleMiddleware = require('../middleware/checkRoleMiddleware');
 
 router.get('/', productController.getAllProducts)
 router.get('/:id', productController.getOneProduct)
-router.post('/', checkRoleMiddleware("ADMIN"), productController.createProduct)
+router.post('/', productController.createProduct)
 router.post('/:id', productController.sendReview)
 
 

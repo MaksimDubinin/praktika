@@ -29,7 +29,7 @@ export const login = async (email, password) => {
 
 
 export const check = async () => {
-    const {data} = await $authHost.get(process.env.REACT_APP_API_URL + '/user/auth' )
+    const {data} = await $authHost.get(process.env.REACT_APP_API_URL + '/user/auth')
     localStorage.setItem('token', data.token)
     return jwtDecode(data.token)
 }
