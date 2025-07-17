@@ -22,10 +22,8 @@ const MyForm = observer(() => {
             } else {
                 data = await registration(username, email, password);
             }
-            user.setUser(true)
-            console.log(data)
+            user.setUser(data)
             user.setIsAuth(true)
-            console.log(user.isAuth)
             navigate(SHOP_ROUTE)
         } catch (error) {
             alert(error.response.data.message);
@@ -76,7 +74,7 @@ const MyForm = observer(() => {
                 marginLeft: '5px', display: 'flex', justifyContent: 'space-between',
                 alignItems: 'center', marginRight: '10px', marginBottom: '5px'
             }}>
-                <div>
+                <div style={{display: 'flex', justifyContent: 'space-between'}}>
                     {location.pathname === LOGIN_ROUTE
                         ?
                         (<>
