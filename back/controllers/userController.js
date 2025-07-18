@@ -4,9 +4,9 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 
-const generateJwt = (id, email, role) => {
+const generateJwt = (id, email, role, name) => {
     return jwt.sign(
-        {id, email, role},
+        {id, email, role, name},
         process.env.SECRET_KEY,
         {expiresIn: '6h'}
     )
@@ -28,7 +28,7 @@ class UserController {
             if (!comparePassword) {
                 return next(ApiError.badRequest('Неверный пароль!'))
             }
-            const token = generateJwt(user.id, user.email, user.role)
+            const token = generateJwt(user.id, user.email, user.role, user.username)
             return res.json({token})
         } catch (e) {
             return next(ApiError.internal(e.message))
@@ -49,7 +49,7 @@ class UserController {
             const hashedPassword = await bcrypt.hash(password, 5);
             const user = await Users.create({username: username,email: email,password: hashedPassword, role: "USER"})
             const basket = await Baskets.create({userId: user.id})
-            const token = generateJwt(user.id, user.email, user.role)
+            const token = generateJwt(user.id, user.email, user.role,  user.username)
             return res.json({token});
         } catch (e) {
             return next(ApiError.internal(e.message));
@@ -58,7 +58,7 @@ class UserController {
 
     async check(req, res, next){
         const candidate = await Users.findOne({where: req.user.id})
-        const token = generateJwt(req.user.id, req.user.email, candidate.role);
+        const token = generateJwt(req.user.id, req.user.email, candidate.role, req.user.username);
         return res.json({token})
     }
 }

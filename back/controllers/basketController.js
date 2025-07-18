@@ -1,19 +1,30 @@
 const {Products, Basket_Content,Baskets} = require('../models/models');
 const ApiError = require("../error/ApiError");
 const { sequelize } = require('../db');
+const {where} = require("sequelize");
 
 
 class basketController {
     async getAllProductsFromBasket(req, res, next) {
         try {
-            const {id} = req.body;
+            const {id} = req.query;
             const basket = await Baskets.findOne({where: {userId: id}})
             if (!basket) {
                 return next(ApiError.badRequest("Корзины пользователя не существует!"))
             }
-            const content = await Basket_Content.findAll(
-                {where: {basketIdBasket: basket.id_basket}}
-            )
+            const content = await Basket_Content.findAll({
+                where: {basketIdBasket: basket.id_basket},
+                include: [
+                    {
+                        model: Baskets,
+                        attributes: ['total_price']
+                    },
+                    {
+                        model: Products,
+                        attributes: ['id', 'name', 'price', 'type', 'rating', 'img']
+                    }
+                ]
+            });
             if (content.length === 0) {
                 return next(ApiError.badRequest("Ваша корзина пуста!"))
             }
@@ -25,15 +36,14 @@ class basketController {
 
     async addProductToBasket(req, res, next) {
         try {
-            const id_product = req.params.id;
-            const {id, quantity} = req.body;
+            const {id_product, id, quantity} = req.body;
             const basket = await Baskets.findOne({where: {userId: id}})
             if (!basket) {
                 return next(ApiError.badRequest("Корзины пользователя не существует!"))
             }
 
             const isInBasket = await Basket_Content.findOne({
-                where: {productId: id_product}
+                where: {productId: id_product, basketIdBasket: basket.id_basket},
             });
             if (!isInBasket) {
                 const content = await Basket_Content.create({
@@ -48,7 +58,7 @@ class basketController {
                 const new_quantity = content.quantity + quantity;
                 const updated_basket = await Basket_Content.update(
                     {quantity: new_quantity},
-                    {where: {productId: id_product}}
+                    {where: {productId: id_product, basketIdBasket: basket.id_basket}}
                 )
             }
 

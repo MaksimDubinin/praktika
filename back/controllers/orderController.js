@@ -21,6 +21,7 @@ class basketController {
             const order = await Orders.create({
                 total_price: basket.total_price,
                 userId: id,
+                date: Date.now(),
             })
             const orderItem = []
             for (const item of order_content) {
@@ -58,7 +59,7 @@ class basketController {
 
     async getAllOrderByUserId(req, res, next) {
         try {
-            const {id} = req.body;
+            const {id} = req.query;
             const orders = await Orders.findAll({
                 where: {userId: id},
                 include: {model: Orders_Content, attributes: ['quantity', 'orderIdOrder', 'productId']},
