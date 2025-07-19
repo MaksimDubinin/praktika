@@ -4,7 +4,7 @@ import {Context} from "../index";
 import {Button} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import {SHOP_ROUTE} from "../utils/consts";
-import {getOneProduct} from "../http/ProductApi";
+
 
 const BasketPage = () => {
     const {user} = useContext(Context)
@@ -52,10 +52,15 @@ const BasketPage = () => {
                             <h1>Корзина</h1>
                             <h4>Количество позиций {content.length}</h4>
                             {content.map((item) => (
-                                <div key={item.id} className="card mb-3" style={{maxWidth: "540px", borderWidth: "2px", borderColor: "rgb(142,73,221)"}}>
+                                <div key={item.id} className="card mb-3" style={{maxWidth: "540px", backgroundColor: "rgb(254,254,254)", marginBottom:"5px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)"}}>
                                     <div className="row no-gutters">
                                         <div className="col-md-4">
-                                            <img src={`http://localhost:5000/${item.product.img}`} className="card-img" alt="..."/>
+                                            <img src={`http://localhost:5000/${item.product.img}`} className="card-img" alt="..."
+                                                style={{cursor: "pointer"}}
+                                                onClick={() => {
+                                                    navigate(`/shop/${item.product.id}`)
+                                                }}
+                                            />
                                         </div>
                                         <div className="col-md-8">
                                             <div className="card-body">
@@ -64,7 +69,7 @@ const BasketPage = () => {
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                                          fill="currentColor" className="bi bi-star-fill"
                                                          viewBox="0 0 16 16"
-                                                         style={{marginLeft: "5px", paddingBottom: "5px"}}>
+                                                         style={{marginLeft: "5px", paddingBottom: "5px", color:"rgb(244,219,90)"}}>
                                                         <path
                                                             d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                                     </svg>

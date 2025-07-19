@@ -27,11 +27,18 @@ class productController {
         try {
             const {id} = req.params
             const product = await Products.findOne({
-                where: {id: id},
+                where: { id: id },
                 include: [
-                    { model: Rating, attributes: ['text', 'rating', 'userId']},
+                    {
+                        model: Rating,
+                        attributes: ['text', 'rating', 'userId', 'id'],
+                        include: [{
+                            model: Users,
+                            attributes: ['username']
+                        }]
+                    }
                 ]
-            })
+            });
             if (!product) {
                 return next(ApiError.badRequest('Товара с такми ID не существует!'))
             }
@@ -72,6 +79,13 @@ class productController {
                 return next(ApiError.badRequest("Продукт не найден"));
             }
 
+            const ifAlreadyComment = await Rating.findOne(
+                {where: {userId: userId, productId: productId}},
+            )
+
+            if (ifAlreadyComment) {
+                return next(ApiError.badRequest("Вы уже оставляли отзыв на этот товар"));
+            }
             const review = await Rating.create({
                 rating: rating,
                 text: text,

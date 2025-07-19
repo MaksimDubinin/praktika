@@ -1,4 +1,4 @@
-const {Orders_Content, Basket_Content,Baskets, Orders, Products} = require('../models/models');
+const {Orders_Content, Basket_Content,Baskets, Orders, Products, Users} = require('../models/models');
 const ApiError = require("../error/ApiError");
 
 class basketController {
@@ -47,7 +47,9 @@ class basketController {
     // Для админа додлжна быть доступна
     async getAllOrders(req, res, next) {
         try {
-            const orders = await Orders.findAll({})
+            const orders = await Orders.findAll({
+                include: [{model: Users, attributes: ['username', 'email']}],
+            })
             if (orders.length === 0) {
                 return next(ApiError.badRequest("Заказов нет!"))
             }

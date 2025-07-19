@@ -37,3 +37,10 @@ export const getOrders = async (id) => {
     if (data.length !== 0) {return data}
     return data
 }
+
+export const getAllOrder = async () => {
+    const {data} = await $authHost.get(
+        process.env.REACT_APP_API_URL + '/order/admin'
+    )
+    return data
+}
