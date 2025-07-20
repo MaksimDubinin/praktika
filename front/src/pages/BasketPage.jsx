@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {createOrder, getBasketContent} from "../http/BasketApi";
+import {createOrder, deleteFromBasket, getBasketContent} from "../http/BasketApi";
 import {Context} from "../index";
 import {Button} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
@@ -16,6 +16,7 @@ const BasketPage = () => {
         getBasketContent(user.user.id).then((data) => {
             basket.setBasket(data);
             setContent(data)
+            console.log(data)
         }).catch(e => {
             console.error("Ошибка при загрузке товаров:", e);
         });
@@ -50,7 +51,7 @@ const BasketPage = () => {
                     }}>
                         <div style={{width:"50%", marginLeft: '50px', height:"50%"}}>
                             <h1>Корзина</h1>
-                            <h4>Количество позиций {content.length}</h4>
+                            <h4>Количество позиций: {content.length}</h4>
                             {content.map((item) => (
                                 <div key={item.id} className="card mb-3" style={{maxWidth: "540px", backgroundColor: "rgb(254,254,254)", marginBottom:"5px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)"}}>
                                     <div className="row no-gutters">
@@ -77,13 +78,27 @@ const BasketPage = () => {
                                                 <p className="card-text">Количество: {item.product.type === "Шоколад" ? `${item.quantity}` : `${item.quantity * 250} г.`}</p>
                                                 <p className="card-text">Цена: {item.quantity * item.product.price} р.</p>
                                             </div>
+                                            <div style={{display: "flex", justifyContent: "end"}}>
+                                                <Button
+                                                    style={{marginBottom:"10px", marginRight:"10px",
+                                                        background: "rgba(142,73,221, 0.8)", borderColor: "rgb(142,73,221)"
+                                                    }}
+                                                    onClick={async () => {
+                                                        await deleteFromBasket(item.product.id, user.user.id)
+                                                        navigate(0)
+                                                    }}>
+                                                    Удалить
+                                                </Button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             ))}
                         </div>
                         <div style={{width:"50%", marginLeft: '50px', height:"50%",
-                            backgroundColor: "rgb(243,243,243)", borderRadius: '5px'}} >
+                            backgroundColor: "rgb(250,250,250)", borderRadius: '5px'
+                            , boxShadow: "0 2px 8px rgba(0,0,0,0.1)", marginTop:'10px'
+                        }} >
                             <h1 style={{padding:"10px"}}>Итого</h1>
                             <h3 style={{padding:"10px"}}>Товары, {content.length} шт.</h3>
                             <h3 style={{padding:"10px"}}>К оплате: {content[0].basket.total_price} р.</h3>

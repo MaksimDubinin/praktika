@@ -10,7 +10,9 @@ class productController {
             const {type} = req.query
             let products
             if (type === "Все типы") {
-                products = await Products.findAll()
+                products = await Products.findAll({
+                    include: {model: Rating}
+                })
             } else {
                 products = await Products.findAll({where: {type: type}})
             }
@@ -58,7 +60,8 @@ class productController {
                     type: type,
                     name: name,
                     price: price,
-                    img: filename
+                    img: filename,
+                    quantity: 50,
             })
             return res.json(product);
         } catch (e) {

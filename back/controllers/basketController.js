@@ -84,6 +84,38 @@ class basketController {
             return next(ApiError.internal(e.message));
         }
     }
+
+    async deleteFromBasket(req, res, next) {
+        try {
+            const {id_product, id} = req.body;
+            const basket = await Baskets.findOne({
+                where: {userId: id},
+            })
+            const deleteProduct = await Basket_Content.destroy({
+                where: {productId: id_product, basketIdBasket: basket.id_basket},
+            })
+
+            const price = await Basket_Content.findAll({
+                where: {basketIdBasket: basket.id_basket},
+                include: [{ model: Products, attributes: ['price'] }]
+            })
+
+            const totalPrice = price.reduce((sum, item) => {
+                return sum + (item.quantity * item.product.price);
+            }, 0);
+
+            const newBasket = await Baskets.update(
+                {total_price: totalPrice} ,
+                {where: {id_basket: basket.id_basket},}
+            )
+            const updatedBasket = await Baskets.findOne(
+                {where: {id_basket: basket.id_basket}},
+            )
+            return res.json(updatedBasket);
+        } catch (e) {
+            return next(ApiError.internal(e.message));
+        }
+    }
 }
 
 module.exports = new basketController()
