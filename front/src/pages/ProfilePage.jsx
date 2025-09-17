@@ -5,6 +5,8 @@ import {useNavigate} from "react-router-dom";
 import {SHOP_ROUTE} from "../utils/consts";
 import {getOrders} from "../http/BasketApi";
 import {Button} from "react-bootstrap";
+import axios from "axios";
+import {$host} from "../http";
 
 const ProfilePage = observer(() => {
     const {user} = useContext(Context)
@@ -12,16 +14,23 @@ const ProfilePage = observer(() => {
     const [order, setOrder] = useState([])
 
     function logOut () {
+
+        const {data} = axios.post(
+            process.env.REACT_APP_API_URL + '/user/logout',
+            {},
+            {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
         user.setUser({})
         user.setIsAuth(false)
-        localStorage.removeItem("token")
-        localStorage.removeItem("user")
-        localStorage.removeItem("isAuth")
         navigate(SHOP_ROUTE)
     }
 
     function sortOrdersByDate(orders) {
-
         return [...orders].sort((a, b) => {
             const dateA = new Date(a.date);
             const dateB = new Date(b.date);

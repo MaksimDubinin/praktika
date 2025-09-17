@@ -1,7 +1,7 @@
 import {$authHost, $host} from "./index";
 
 
-export const getProducts = async (type = "all") => {
+export const getProducts = async (type = "Все типы") => {
     const {data} = await $host.get(
         process.env.REACT_APP_API_URL + '/product',
         {
@@ -11,7 +11,8 @@ export const getProducts = async (type = "all") => {
     return data
 }
 
-export const getOneProduct = async (id) => {const {data} = await $host.get(
+export const getOneProduct = async (id) => {
+    const {data} = await $host.get(
     process.env.REACT_APP_API_URL + `/product/${id}`);
     return data
 }
@@ -43,7 +44,7 @@ export const createProduct = async (productData) => {
         formData,
         {
             headers: {
-                'Content-Type': 'multipart/form-data'
+                'Content-Type': 'multipart/form-data',
             }
         }
     );

@@ -12,23 +12,38 @@ const MyForm = observer(() => {
     const [username, setUsername] = useState('')
     const location = useLocation();
     const navigate = useNavigate();
+    const passRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])([a-zA-Z0-9!@#$%^&*]{8,})/
+    const emailRegex = /([a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]+)/
 
     const click = async (e) => {
         try {
             e.preventDefault();
             let data;
             if (location.pathname === LOGIN_ROUTE) {
-                data = await login(email, password);
+                if (emailRegex.test(email) && passRegex.test(password)) {
+                    data = await login(email, password);
+                } else {
+                    console.log("email or password is incorrect")
+                    return
+                }
             } else {
-                data = await registration(username, email, password);
+                if (emailRegex.test(email) && passRegex.test(password)) {
+                    data = await registration(username, email, password);
+                } else {
+                    console.log("email or password is incorrect")
+                    return
+                }
             }
-            user.setUser(data)
+            user.setUser({...data})
             user.setIsAuth(true)
-            navigate(SHOP_ROUTE)
+            console.log(user.user)
+            await new Promise(resolve => setTimeout(resolve, 0));
+            navigate(SHOP_ROUTE);
         } catch (error) {
-            alert(error.response.data.message);
+            alert(error);
         }
     }
+
     return (
         <form style={{
             border: "2px solid",

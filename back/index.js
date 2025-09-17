@@ -8,11 +8,17 @@ const router = require('./routes/index');
 const errorHandler = require('./middleware/ErrorHandlingMiddleware');
 const fileUpload = require('express-fileupload')
 const path = require('path');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+    optionsSuccessStatus: 200
+}));
 app.use(express.json())
+app.use(cookieParser());
 app.use(express.static(path.resolve(__dirname, 'static')))
 app.use(fileUpload({}))
 app.use('/api/v1', router)

@@ -1,11 +1,16 @@
-import {$authHost, $host} from "./index";
+import {$authHost} from "./index";
 
 
 export const getBasketContent = async (id) => {
-    const {data} = await $authHost.get(
-        process.env.REACT_APP_API_URL + '/basket', {params: {id}}
-    );
-    return data
+    try {
+        const {data} = await $authHost.get(
+            process.env.REACT_APP_API_URL + '/basket',
+            { params: {id}}
+        );
+        return data;
+    } catch (error) {
+        throw error;
+    }
 }
 
 export const addToBasket = async (id_product, id, quantity = 1) => {

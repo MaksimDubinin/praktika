@@ -7,6 +7,7 @@ const Users = sequelize.define("users", {
     email: {type: DataTypes.STRING, unique: true},
     password: {type: DataTypes.STRING, allowNull: false},
     role: {type: DataTypes.STRING, defaultValue: "USER"},
+    coins: {type: DataTypes.INTEGER, allowNull: false, defaultValue: 0}
 })
 
 const Products = sequelize.define("products", {
